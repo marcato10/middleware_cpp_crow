@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/ticket_middle.dir/main.cpp.o -o ticket_middle 

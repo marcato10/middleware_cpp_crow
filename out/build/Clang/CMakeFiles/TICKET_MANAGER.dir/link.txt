@@ -1,0 +1,2 @@
+/usr/bin/ar qc libTICKET_MANAGER.a CMakeFiles/TICKET_MANAGER.dir/src/ticket_manager.cpp.o
+/usr/bin/ranlib libTICKET_MANAGER.a

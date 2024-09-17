@@ -1,0 +1,3 @@
+/home/marcato/Documentos/Projects/Middleware/build/CMakeFiles/ticket_middle.dir
+/home/marcato/Documentos/Projects/Middleware/build/CMakeFiles/edit_cache.dir
+/home/marcato/Documentos/Projects/Middleware/build/CMakeFiles/rebuild_cache.dir

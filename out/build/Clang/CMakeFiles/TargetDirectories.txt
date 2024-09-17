@@ -1,0 +1,4 @@
+/home/marcato/Documentos/Projects/Cpp/Middleware/out/build/Clang/CMakeFiles/ticket_middle.dir
+/home/marcato/Documentos/Projects/Cpp/Middleware/out/build/Clang/CMakeFiles/TICKET_MANAGER.dir
+/home/marcato/Documentos/Projects/Cpp/Middleware/out/build/Clang/CMakeFiles/edit_cache.dir
+/home/marcato/Documentos/Projects/Cpp/Middleware/out/build/Clang/CMakeFiles/rebuild_cache.dir

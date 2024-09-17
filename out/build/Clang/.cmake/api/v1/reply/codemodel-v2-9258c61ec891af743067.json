@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.28.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ticket_middle",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "TICKET_MANAGER::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TICKET_MANAGER-Debug-b1dc6c63f3c391d8d5a6.json",
+					"name" : "TICKET_MANAGER",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ticket_middle::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ticket_middle-Debug-4a85b850d09afd37fd8c.json",
+					"name" : "ticket_middle",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/marcato/Documentos/Projects/Cpp/Middleware/out/build/Clang",
+		"source" : "/home/marcato/Documentos/Projects/Cpp/Middleware"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

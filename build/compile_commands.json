@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/marcato/Documentos/Projects/Middleware/build",
+  "command": "/usr/bin/c++   -g -o CMakeFiles/ticket_middle.dir/main.cpp.o -c /home/marcato/Documentos/Projects/Middleware/main.cpp",
+  "file": "/home/marcato/Documentos/Projects/Middleware/main.cpp",
+  "output": "CMakeFiles/ticket_middle.dir/main.cpp.o"
+}
+]
