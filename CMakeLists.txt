@@ -15,9 +15,7 @@ set(SOURCES
 
 # Defina os arquivos de cabeçalho
 set(HEADERS
-    include/ticket_manager.hpp
-    include/user_session.hpp
-)
+    include/ticket_manager.hpp)
 
 # Adicione o executável
 add_executable(ticket_middle ${SOURCES} ${HEADERS})
@@ -41,7 +39,7 @@ target_include_directories(ticket_middle PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/incl
 
 # Vincule as bibliotecas necessárias ao executável
 target_link_libraries(ticket_middle PRIVATE TICKET_MANAGER)
-
+target_link_libraries(ticket_middle PRIVATE cpr)
 
 # Configurações adicionais (se necessário)
 add_compile_options(-Wall -Wextra -Wpedantic)

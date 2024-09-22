@@ -5,27 +5,41 @@
 #include <memory>
 #include <optional>
 
-const std::string ip = "127.0.0.1";
-const std::string port = "8080";
+const std::string ip = "192.168.224.128";
+const std::string port = "3000";
+
+const std::string proxy_ip = "192.168.12.120";
+const std::string proxy_port = "3000";
 
 int main() {
   crow::SimpleApp app;
-  std::string base_url = "http://" + ip + ":" + port;
+
+  std::string base_url = "http://" + proxy_ip + ":" + port;
   auto ticketManager = std::make_unique<TicketDataManager>(base_url);
 
   // Rota de login
   CROW_ROUTE(app, "/login")
-      .methods("POST"_method)([&ticketManager](const crow::request &req) {
+      .methods("OPTIONS"_method,
+               "POST"_method)([&ticketManager](const crow::request &req) {
+        crow::response res;
+
         auto x = crow::json::load(req.body);
-        if (!x)
-          return crow::response(400, "Invalid JSON");
+        if (!x) {
+          res.code = 400;
+          res.body = "Invalid JSON";
+          return res;
+        }
 
         std::string login = x["Login"].s();
         std::string password = x["Senha"].s();
+        std::cout << login << std::endl;
+        std::cout << x["Login"].s() << std::endl;
 
         auto user = ticketManager->getUserByLogin(login);
-        if (!user) {
-          return crow::response(204, "User not found");
+        if (!user.has_value()) {
+          res.code = 204;
+          res.body = "User not found";
+          return res;
         }
 
         if (user->senha ==
@@ -35,10 +49,14 @@ int main() {
                                              {{"id", user->id},
                                               {"login", user->login},
                                               {"adm", user->adm}}}});
-          return crow::response(200, response_body);
+          res.code = 200;
+          res.body = response_body.dump();
         } else {
-          return crow::response(203, "Incorrect password");
+          res.code = 203;
+          res.body = "Incorrect password";
         }
+
+        return res;
       });
 
   // Rota para registro de usuário
@@ -49,17 +67,18 @@ int main() {
           return crow::response(400, "Invalid JSON");
 
         TicketDataManager::PessoaDAO newUser{x["Login"].s(), x["Senha"].s()};
-        
+
         try {
+          /*
           auto createdUser = ticketManager->createUser(newUser);
           crow::json::wvalue response_body(
               {{"message", "User created successfully"},
                {"user",
-                {{"id", createdUser.id},
-                 {"login", createdUser.login},
-                 {"adm", createdUser.adm}}}});
-          return crow::response(201, response_body);
+                {{"Login", createdUser.login}, {"ADM", createdUser.adm}}}});
+                */
+          return crow::response(201);
         } catch (const std::exception &e) {
+          std::cout << e.what() << std::endl;
           return crow::response(500, "Error creating user: " +
                                          std::string(e.what()));
         }
@@ -70,6 +89,7 @@ int main() {
       .methods("GET"_method)([&ticketManager](const crow::request &) {
         try {
           auto tickets = ticketManager->getAllTickets();
+          std::cout << "Pegou tickets" << std::endl;
           crow::json::wvalue response_body;
           response_body["tickets"] = crow::json::wvalue::list();
           for (size_t i = 0; i < tickets.size(); ++i) {

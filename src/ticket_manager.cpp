@@ -1,17 +1,27 @@
 #include "../include/ticket_manager.hpp"
 #include <cpr/cpr.h>
+
+#include <cstddef>
 #include <stdexcept>
 
 TicketDataManager::Pessoa json_to_pessoa(const crow::json::rvalue &rvalue) {
-  return TicketDataManager::Pessoa{rvalue["ID"].i(), rvalue["Login"].s(),
-                                   rvalue["Senha"].s(),
-                                   static_cast<int>(rvalue["ADM"].i())};
+  auto pessoa = TicketDataManager::Pessoa();
+  std::cout << rvalue["ID"].i() << std::endl;
+  pessoa.id = rvalue["ID"].i();
+  pessoa.login = rvalue["Login"].s();
+  std::cout << rvalue["Login"].s() << std::endl;
+  pessoa.senha = rvalue["Senha"].s();
+  std::cout << rvalue["Senha"].s() << std::endl;
+
+  pessoa.adm = rvalue["ADM"].b();
+  std::cout << rvalue["ADM"].b() << std::endl;
+  return pessoa;
 }
 
 class TicketDataManager::Impl {
 public:
   Impl(const std::string &base_url) : base_url(base_url) {}
-
+  
   std::string base_url;
 
   std::pair<int, crow::json::rvalue>
@@ -48,11 +58,20 @@ TicketDataManager::operator=(TicketDataManager &&) noexcept = default;
 
 std::vector<TicketDataManager::Ticket> TicketDataManager::getAllTickets() {
   auto [status, response] = pImpl->makeRequest("/tickets", "GET");
+  std::cout << status << std::endl;
   std::vector<Ticket> tickets;
   for (const auto &t : response) {
-    tickets.push_back({t["ID"].i(), t["Titulo"].s(), t["Descricao"].s(),
-                       static_cast<int>(t["Prioridade"].i()),
-                       t["ID_pessoa"].i(), static_cast<int>(t["Status"].i())});
+
+    if (t["ID_pessoa"].nt() == crow::json::num_type::Null) {
+      tickets.push_back({t["ID"].i(), t["Titulo"].s(), t["Descricao"].s(),
+                         static_cast<int>(t["Prioridade"].i()), 0,
+                         static_cast<int>(t["Status"].i())});
+    } else {
+      tickets.push_back({t["ID"].i(), t["Titulo"].s(), t["Descricao"].s(),
+                         static_cast<int>(t["Prioridade"].i()),
+                         t["ID_pessoa"].i(),
+                         static_cast<int>(t["Status"].i())});
+    }
   }
   return tickets;
 }
@@ -129,8 +148,7 @@ std::vector<TicketDataManager::Pessoa> TicketDataManager::getAllUsers() {
   auto [status, response] = pImpl->makeRequest("/usuarios", "GET");
   std::vector<Pessoa> users;
   for (const auto &u : response) {
-    users.push_back(
-        {u["ID"].i(), u["Login"].s(), "", static_cast<int>(u["ADM"].i())});
+    users.push_back({u["ID"].i(), u["Login"].s(), "", (u["ADM"].b())});
   }
   return users;
 }
@@ -151,19 +169,25 @@ TicketDataManager::getUserByLogin(const std::string &login) {
   try {
     auto [status, response] =
         pImpl->makeRequest("/usuarios/login/" + login, "GET");
-    return json_to_pessoa(response);
+    auto pessoa = json_to_pessoa(response);
+    std::cout << response.key() << std::endl;
+    return pessoa;
   } catch (const std::exception &e) {
+    std::cout << e.what() << std::endl;
     return std::nullopt;
   }
 }
 
 TicketDataManager::Pessoa TicketDataManager::createUser(const PessoaDAO &user) {
-  crow::json::wvalue data({{"Login", user.login}, {"Senha", user.senha}});
-
+  crow::json::wvalue data(
+      {{"Login", user.login}, {"Senha", user.senha}, {"ADM", false}});
+  std::cout << user.login << std::endl;
+  std::cout << user.senha << std::endl;
   auto [status, response] = pImpl->makeRequest("/usuarios", "POST", data);
   // Não retorna a senha apenas, por isso o ""
-  return {response["ID"].i(), response["Login"].s(), "",
-          static_cast<int>(response["ADM"].i())};
+  auto pessoa = this->getUserByLogin(user.login);
+
+  return pessoa.value();
 }
 
 void TicketDataManager::setupRoutes(crow::SimpleApp &app) {

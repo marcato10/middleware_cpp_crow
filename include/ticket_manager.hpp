@@ -25,7 +25,7 @@ public:
     int64_t id;
     std::string login;
     std::string senha;
-    int adm;
+    bool adm;
   };
 
   struct PessoaDAO {
